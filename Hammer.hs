@@ -440,6 +440,18 @@ instance Storable C'HBenchmarkResults where
 
 -- #synonym_t HBenchmarkResults , <HBenchmarkResults_>
 -- #ccall h_parse , Ptr <HParser_> -> Ptr CUChar -> CSize -> IO (Ptr <HParseResult_>)
+foreign import ccall "hammer.h h_parse" h_parse
+  :: Ptr C'HParser -> CString -> CSize -> IO (Ptr C'HParseResult)
+
+parse :: Ptr C'HParser -> String -> Maybe C'HParseResult
+parse p s = unsafeLocalState $ do
+  let len = fromIntegral $ length s
+  res <- withCString s $ \s' ->
+    h_parse p s' len
+  if res == nullPtr
+  then return Nothing
+  else Just <$> peek res
+
 -- #ccall h_parse__m , Ptr <HAllocator_> -> Ptr <HParser_> -> Ptr CUChar -> CSize -> IO (Ptr <HParseResult_>)
 -- #ccall h_token , Ptr CUChar -> CSize -> IO (Ptr <HParser_>)
 foreign import ccall "hammer.h h_token" h_token
