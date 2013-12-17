@@ -23,9 +23,10 @@ import Foreign.Ptr (Ptr,FunPtr,plusPtr)
 import Foreign.Ptr (wordPtrToPtr,castPtrToFunPtr)
 import Foreign.Storable
 import Foreign.C.Types
-import Foreign.C.String (CString,CStringLen,CWString,CWStringLen)
+import Foreign.C.String (CString,CStringLen,CWString,CWStringLen,withCString)
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Marshal.Array (peekArray,pokeArray)
+import Foreign.Marshal.Unsafe
 import Data.Functor
 import Data.Int
 import Data.Word
@@ -441,6 +442,15 @@ instance Storable C'HBenchmarkResults where
 -- #ccall h_parse , Ptr <HParser_> -> Ptr CUChar -> CSize -> IO (Ptr <HParseResult_>)
 -- #ccall h_parse__m , Ptr <HAllocator_> -> Ptr <HParser_> -> Ptr CUChar -> CSize -> IO (Ptr <HParseResult_>)
 -- #ccall h_token , Ptr CUChar -> CSize -> IO (Ptr <HParser_>)
+foreign import ccall "hammer.h h_token" h_token
+  :: CString -> CSize -> IO (Ptr C'HParser)
+
+token :: String -> Ptr C'HParser
+token s = unsafeLocalState $ do
+  let len = fromIntegral $ length s
+  withCString s $ \s' ->
+    h_token s' len
+
 -- #ccall h_token__m , Ptr <HAllocator_> -> Ptr CUChar -> CSize -> IO (Ptr <HParser_>)
 -- #ccall h_ch , CUChar -> IO (Ptr <HParser_>)
 -- #ccall h_ch__m , Ptr <HAllocator_> -> CUChar -> IO (Ptr <HParser_>)
