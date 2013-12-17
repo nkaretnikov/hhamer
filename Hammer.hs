@@ -26,6 +26,7 @@ import Foreign.C.Types
 import Foreign.C.String (CString,CStringLen,CWString,CWStringLen)
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Marshal.Array (peekArray,pokeArray)
+import Data.Functor
 import Data.Int
 import Data.Word
 
@@ -188,13 +189,22 @@ instance Storable C'HBytes where
             size_t index;
             char bit_offset;
         } HParsedToken; -}
+
+-- TODO: Support sint, uint, etc.
+data C'HTokenData = Bytes C'HBytes
+                  -- | Seq C'HCountedArray
+                  deriving (Eq,Show)
+
 data C'HParsedToken = C'HParsedToken{
   c'HParsedToken'token_type :: C'HTokenType,
+  c'HParsedToken'token_data :: C'HTokenData,
   c'HParsedToken'index :: CSize,
   c'HParsedToken'bit_offset :: CChar
 } deriving (Eq,Show)
 p'HParsedToken'token_type p = plusPtr p 0
 p'HParsedToken'token_type :: Ptr (C'HParsedToken) -> Ptr (C'HTokenType)
+p'HParsedToken'token_data p = plusPtr p 4
+p'HParsedToken'token_data :: Ptr C'HParsedToken -> Ptr C'HTokenData
 p'HParsedToken'index p = plusPtr p 12
 p'HParsedToken'index :: Ptr (C'HParsedToken) -> Ptr (CSize)
 p'HParsedToken'bit_offset p = plusPtr p 16
@@ -204,14 +214,21 @@ instance Storable C'HParsedToken where
   alignment _ = 4
   peek p = do
     v0 <- peekByteOff p 0
-    v1 <- peekByteOff p 12
-    v2 <- peekByteOff p 16
-    return $ C'HParsedToken v0 v1 v2
-  poke p (C'HParsedToken v0 v1 v2) = do
+    v1 <- case () of
+      _ | v0 == c'TT_BYTES    -> Bytes <$> peekByteOff p 4
+        -- TODO: Support sint, uint, etc.
+        -- | v0 == c'TT_SEQUENCE -> Seq <$> peekByteOff p 4
+    v2 <- peekByteOff p 12
+    v3 <- peekByteOff p 16
+    return $ C'HParsedToken v0 v1 v2 v3
+  poke p (C'HParsedToken v0 v1 v2 v3) = do
     pokeByteOff p 0 v0
-    pokeByteOff p 12 v1
-    pokeByteOff p 16 v2
-    return ()
+    case v1 of
+      Bytes v1' -> pokeByteOff p 4 v1'
+      -- TODO: Support sint, uint, etc.
+      -- Seq v1'   -> pokeByteOff p 4 v1'
+    pokeByteOff p 12 v2
+    pokeByteOff p 16 v3
 
 -- #synonym_t HParsedToken , <HParsedToken_>
 {- typedef struct HParseResult_ {
