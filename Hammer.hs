@@ -473,6 +473,13 @@ ch = unsafeLocalState . h_ch . castCharToCUChar
 
 -- #ccall h_ch__m , Ptr <HAllocator_> -> CUChar -> IO (Ptr <HParser_>)
 -- #ccall h_ch_range , CUChar -> CUChar -> IO (Ptr <HParser_>)
+foreign import ccall "hammer.h h_ch_range" h_ch_range
+  :: CUChar -> CUChar -> IO (Ptr C'HParser)
+
+ch_range :: Char -> Char -> Ptr C'HParser
+ch_range x y =
+  unsafeLocalState $ h_ch_range (castCharToCUChar x) (castCharToCUChar y)
+
 -- #ccall h_ch_range__m , Ptr <HAllocator_> -> CUChar -> CUChar -> IO (Ptr <HParser_>)
 -- #ccall h_int_range , Ptr <HParser_> -> CLong -> CLong -> IO (Ptr <HParser_>)
 -- #ccall h_int_range__m , Ptr <HAllocator_> -> Ptr <HParser_> -> CLong -> CLong -> IO (Ptr <HParser_>)
