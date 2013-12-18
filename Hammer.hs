@@ -23,7 +23,7 @@ import Foreign.Ptr (Ptr,FunPtr,plusPtr)
 import Foreign.Ptr (wordPtrToPtr,castPtrToFunPtr)
 import Foreign.Storable
 import Foreign.C.Types
-import Foreign.C.String (CString,CStringLen,CWString,CWStringLen,withCString)
+import Foreign.C.String
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Marshal.Array (peekArray,pokeArray)
 import Foreign.Marshal.Unsafe
@@ -465,6 +465,12 @@ token s = unsafeLocalState $ do
 
 -- #ccall h_token__m , Ptr <HAllocator_> -> Ptr CUChar -> CSize -> IO (Ptr <HParser_>)
 -- #ccall h_ch , CUChar -> IO (Ptr <HParser_>)
+foreign import ccall "hammer.h h_ch" h_ch
+  :: CUChar -> IO (Ptr C'HParser)
+
+ch :: Char -> Ptr C'HParser
+ch = unsafeLocalState . h_ch . castCharToCUChar
+
 -- #ccall h_ch__m , Ptr <HAllocator_> -> CUChar -> IO (Ptr <HParser_>)
 -- #ccall h_ch_range , CUChar -> CUChar -> IO (Ptr <HParser_>)
 -- #ccall h_ch_range__m , Ptr <HAllocator_> -> CUChar -> CUChar -> IO (Ptr <HParser_>)
