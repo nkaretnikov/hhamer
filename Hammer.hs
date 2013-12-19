@@ -502,6 +502,12 @@ int32 = unsafeLocalState h_int32
 
 -- #ccall h_int32__m , Ptr <HAllocator_> -> IO (Ptr <HParser_>)
 -- #ccall h_int16 , IO (Ptr <HParser_>)
+foreign import ccall "hammer.h h_int16" h_int16
+  :: IO (Ptr C'HParser)
+
+int16 :: Ptr C'HParser
+int16 = unsafeLocalState h_int16
+
 -- #ccall h_int16__m , Ptr <HAllocator_> -> IO (Ptr <HParser_>)
 -- #ccall h_int8 , IO (Ptr <HParser_>)
 -- #ccall h_int8__m , Ptr <HAllocator_> -> IO (Ptr <HParser_>)
