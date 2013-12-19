@@ -486,6 +486,12 @@ ch_range x y =
 -- #ccall h_bits , CSize -> CInt -> IO (Ptr <HParser_>)
 -- #ccall h_bits__m , Ptr <HAllocator_> -> CSize -> CInt -> IO (Ptr <HParser_>)
 -- #ccall h_int64 , IO (Ptr <HParser_>)
+foreign import ccall "hammer.h h_int64" h_int64
+  :: IO (Ptr C'HParser)
+
+int64 :: Ptr C'HParser
+int64 = unsafeLocalState h_int64
+
 -- #ccall h_int64__m , Ptr <HAllocator_> -> IO (Ptr <HParser_>)
 -- #ccall h_int32 , IO (Ptr <HParser_>)
 -- #ccall h_int32__m , Ptr <HAllocator_> -> IO (Ptr <HParser_>)
