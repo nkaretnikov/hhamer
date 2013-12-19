@@ -526,6 +526,12 @@ uint64 = unsafeLocalState h_uint64
 
 -- #ccall h_uint64__m , Ptr <HAllocator_> -> IO (Ptr <HParser_>)
 -- #ccall h_uint32 , IO (Ptr <HParser_>)
+foreign import ccall "hammer.h h_uint32" h_uint32
+  :: IO (Ptr C'HParser)
+
+uint32 :: Ptr C'HParser
+uint32 = unsafeLocalState h_uint32
+
 -- #ccall h_uint32__m , Ptr <HAllocator_> -> IO (Ptr <HParser_>)
 -- #ccall h_uint16 , IO (Ptr <HParser_>)
 -- #ccall h_uint16__m , Ptr <HAllocator_> -> IO (Ptr <HParser_>)
