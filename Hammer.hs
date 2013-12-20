@@ -558,6 +558,12 @@ whitespace = unsafeLocalState . h_whitespace
 
 -- #ccall h_whitespace__m , Ptr <HAllocator_> -> Ptr <HParser_> -> IO (Ptr <HParser_>)
 -- #ccall h_left , Ptr <HParser_> -> Ptr <HParser_> -> IO (Ptr <HParser_>)
+foreign import ccall "hammer.h h_left" h_left
+  :: Ptr C'HParser -> Ptr C'HParser -> IO (Ptr C'HParser)
+
+left :: Ptr C'HParser -> Ptr C'HParser -> Ptr C'HParser
+left x y = unsafeLocalState $ h_left x y
+
 -- #ccall h_left__m , Ptr <HAllocator_> -> Ptr <HParser_> -> Ptr <HParser_> -> IO (Ptr <HParser_>)
 -- #ccall h_right , Ptr <HParser_> -> Ptr <HParser_> -> IO (Ptr <HParser_>)
 -- #ccall h_right__m , Ptr <HAllocator_> -> Ptr <HParser_> -> Ptr <HParser_> -> IO (Ptr <HParser_>)
