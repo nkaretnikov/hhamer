@@ -566,6 +566,12 @@ left x y = unsafeLocalState $ h_left x y
 
 -- #ccall h_left__m , Ptr <HAllocator_> -> Ptr <HParser_> -> Ptr <HParser_> -> IO (Ptr <HParser_>)
 -- #ccall h_right , Ptr <HParser_> -> Ptr <HParser_> -> IO (Ptr <HParser_>)
+foreign import ccall "hammer.h h_right" h_right
+  :: Ptr C'HParser -> Ptr C'HParser -> IO (Ptr C'HParser)
+
+right :: Ptr C'HParser -> Ptr C'HParser -> Ptr C'HParser
+right x y = unsafeLocalState $ h_right x y
+
 -- #ccall h_right__m , Ptr <HAllocator_> -> Ptr <HParser_> -> Ptr <HParser_> -> IO (Ptr <HParser_>)
 -- #ccall h_middle , Ptr <HParser_> -> Ptr <HParser_> -> Ptr <HParser_> -> IO (Ptr <HParser_>)
 -- #ccall h_middle__m , Ptr <HAllocator_> -> Ptr <HParser_> -> Ptr <HParser_> -> Ptr <HParser_> -> IO (Ptr <HParser_>)
