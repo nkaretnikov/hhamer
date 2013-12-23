@@ -449,8 +449,8 @@ parse p s = unsafeLocalState $ do
   res <- withCString s $ \s' ->
     h_parse p s' len
   if res == nullPtr
-  then return Nothing
-  else Just <$> peek res
+    then return Nothing
+    else Just <$> peek res
 
 -- #ccall h_parse__m , Ptr <HAllocator_> -> Ptr <HParser_> -> Ptr CUChar -> CSize -> IO (Ptr <HParseResult_>)
 -- #ccall h_token , Ptr CUChar -> CSize -> IO (Ptr <HParser_>)
